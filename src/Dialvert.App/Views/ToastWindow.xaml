@@ -1,0 +1,25 @@
+<Window x:Class="Dialvert.App.Views.ToastWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Dialvert" SizeToContent="WidthAndHeight" Style="{StaticResource AppWindow}"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        Topmost="True" ShowInTaskbar="False" ResizeMode="NoResize" ShowActivated="False">
+    <Border x:Name="Card" Margin="10" Background="{StaticResource Ink}" BorderBrush="{StaticResource StrokeHi}" BorderThickness="1"
+            CornerRadius="4" MinWidth="220" MaxWidth="360" Cursor="Hand">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="16" ShadowDepth="3" Opacity="0.5"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Border x:Name="Bar" Background="{StaticResource Signal}" CornerRadius="3,0,0,3"/>
+            <StackPanel Grid.Column="1" Margin="12,9,14,10">
+                <TextBlock x:Name="Headline" FontWeight="SemiBold" FontSize="13" TextTrimming="CharacterEllipsis"/>
+                <TextBlock x:Name="Subline" Style="{StaticResource MonoText}" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
+                <ProgressBar x:Name="Progress" Margin="0,8,0,0" Maximum="1" Visibility="Collapsed"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

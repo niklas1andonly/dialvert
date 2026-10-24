@@ -1,0 +1,237 @@
+<Window x:Class="Dialvert.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:jobs="clr-namespace:Dialvert.Core.Jobs;assembly=Dialvert.Core"
+        xmlns:v="clr-namespace:Dialvert.App.Views"
+        Title="Dialvert" Width="760" Height="680" MinWidth="580" MinHeight="460"
+        Style="{StaticResource AppWindow}" Background="{StaticResource Bg}" Icon="/Assets/dialvert.ico"
+        WindowStartupLocation="CenterScreen" AllowDrop="True">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="52" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="0" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <!-- One row per finished job: a ledger line, not a card. -->
+        <DataTemplate DataType="{x:Type jobs:HistoryEntry}">
+            <Border x:Name="RowBox" Background="Transparent" BorderBrush="{StaticResource Stroke}" BorderThickness="0,0,0,1"
+                    Padding="10,10,6,10" MouseLeftButtonDown="Row_MouseDown" Tag="{Binding}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="22"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="64"/>
+                        <ColumnDefinition Width="96"/>
+                    </Grid.ColumnDefinitions>
+                    <Border x:Name="Mark" Width="7" Height="7" Background="{StaticResource Signal}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,6,0,0"/>
+                    <StackPanel Grid.Column="1" Margin="0,0,12,0">
+                        <TextBlock Text="{Binding Title}" FontSize="13.5" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock x:Name="Sub" Text="{Binding SubText}" Style="{StaticResource MonoText}" Margin="0,3,0,0"
+                                   TextTrimming="CharacterEllipsis" ToolTip="{Binding SubText}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,16,0">
+                        <TextBlock x:Name="Delta" Text="{Binding DeltaText}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Right" Foreground="{StaticResource Signal}"/>
+                        <TextBlock Text="{Binding SizeText}" Style="{StaticResource MonoText}" FontSize="10.5" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="3" Text="{Binding TimeText}" Style="{StaticResource MonoText}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                    <StackPanel x:Name="RowActions" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Hidden">
+                        <Button x:Name="OpenBtn" Style="{StaticResource IconBtn}" Content="&#xE8E5;" ToolTip="Open" Tag="{Binding}" Click="Open_Click"/>
+                        <Button x:Name="RevealBtn" Style="{StaticResource IconBtn}" Content="&#xE838;" ToolTip="Show in folder" Tag="{Binding}" Click="Reveal_Click"/>
+                        <Button Style="{StaticResource IconBtn}" Content="&#xE74D;" ToolTip="Remove from history" Tag="{Binding}" Click="Remove_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <DataTemplate.Triggers>
+                <Trigger SourceName="RowBox" Property="IsMouseOver" Value="True">
+                    <Setter TargetName="RowBox" Property="Background" Value="{StaticResource Surface}"/>
+                    <Setter TargetName="RowActions" Property="Visibility" Value="Visible"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding Grew}" Value="True">
+                    <Setter TargetName="Delta" Property="Foreground" Value="{StaticResource TextDim}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="{x:Static jobs:JobState.Failed}">
+                    <Setter TargetName="Mark" Property="Background" Value="{StaticResource Danger}"/>
+                    <Setter TargetName="Sub" Property="Foreground" Value="{StaticResource Danger}"/>
+                    <Setter TargetName="OpenBtn" Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding State}" Value="{x:Static jobs:JobState.Canceled}">
+                    <Setter TargetName="Mark" Property="Background" Value="{StaticResource TextFaint}"/>
+                    <Setter TargetName="OpenBtn" Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- A job that is still queued or running. -->
+        <DataTemplate DataType="{x:Type jobs:Job}">
+            <Border Background="{StaticResource Surface}" BorderBrush="{StaticResource Stroke}" BorderThickness="0,0,0,1" Padding="10,10,6,10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="22"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border x:Name="Mark" Width="7" Height="7" BorderBrush="{StaticResource Signal}" BorderThickness="1.5"
+                            HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,6,0,0"/>
+                    <StackPanel Grid.Column="1" Margin="0,0,12,0">
+                        <TextBlock Text="{Binding Title}" FontSize="13.5" TextTrimming="CharacterEllipsis"/>
+                        <ProgressBar Maximum="1" Value="{Binding Progress, Mode=OneWay}" Margin="0,8,0,4"/>
+                        <TextBlock x:Name="Msg" Text="waiting …" Style="{StaticResource MonoText}"/>
+                    </StackPanel>
+                    <Button Grid.Column="2" Style="{StaticResource IconBtn}" Content="&#xE711;" ToolTip="Cancel" VerticalAlignment="Center"
+                            Tag="{Binding}" Click="Cancel_Click"/>
+                </Grid>
+            </Border>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding State}" Value="{x:Static jobs:JobState.Running}">
+                    <Setter TargetName="Mark" Property="Background" Value="{StaticResource Signal}"/>
+                    <Setter TargetName="Msg" Property="Text" Value="running …"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <Style x:Key="StatNumber" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="FontWeight" Value="Light"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid x:Name="Frame">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="52"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title bar: wordmark, page tabs, window buttons. The whole bar drags the window. -->
+        <Grid Background="{StaticResource Ink}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Margin="22,0,30,0" VerticalAlignment="Center">
+                <Canvas Width="18" Height="18" VerticalAlignment="Center">
+                    <Path Data="M9,2 A7,7 0 1 1 2,9" Stroke="{StaticResource Signal}" StrokeThickness="3.2"
+                          StrokeStartLineCap="Flat" StrokeEndLineCap="Flat"/>
+                    <Rectangle Canvas.Left="1" Canvas.Top="1" Width="4" Height="4" Fill="{StaticResource Signal}"/>
+                    <Ellipse Canvas.Left="7" Canvas.Top="7" Width="4" Height="4" Fill="{StaticResource Text}"/>
+                </Canvas>
+                <TextBlock Text="dialvert" FontSize="18" FontWeight="Bold" Margin="9,0,0,2" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <RadioButton x:Name="TabHistory" Style="{StaticResource NavTab}" Content="History" GroupName="page" IsChecked="True"
+                             WindowChrome.IsHitTestVisibleInChrome="True" Checked="Tab_Checked"/>
+                <RadioButton x:Name="TabSettings" Style="{StaticResource NavTab}" Content="Settings" GroupName="page"
+                             WindowChrome.IsHitTestVisibleInChrome="True" Checked="Tab_Checked"/>
+            </StackPanel>
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Button Style="{StaticResource Btn}" VerticalAlignment="Center" Margin="0,0,14,0" Padding="10,5"
+                        WindowChrome.IsHitTestVisibleInChrome="True" Click="Pick_Click" ToolTip="Choose files">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE710;" Style="{StaticResource IconText}" FontSize="11" VerticalAlignment="Center" Margin="0,1,7,0"/>
+                        <TextBlock Text="Files"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource CaptionBtn}" Content="&#xE921;" WindowChrome.IsHitTestVisibleInChrome="True" Click="Min_Click"/>
+                <Button x:Name="MaxBtn" Style="{StaticResource CaptionBtn}" Content="&#xE922;" WindowChrome.IsHitTestVisibleInChrome="True" Click="Max_Click"/>
+                <Button Style="{StaticResource CloseBtn}" Content="&#xE8BB;" WindowChrome.IsHitTestVisibleInChrome="True" Click="Close_Click"
+                        ToolTip="Minimize to tray"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Page: history -->
+        <Grid x:Name="HistoryPage" Grid.Row="1" Margin="28,22,28,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Margin="0,0,40,0">
+                    <TextBlock x:Name="StatCount" Text="0" Style="{StaticResource StatNumber}"/>
+                    <TextBlock Text="FILES CONVERTED" Style="{StaticResource Label}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Margin="0,0,40,0">
+                    <TextBlock x:Name="StatSaved" Text="0 B" Style="{StaticResource StatNumber}"/>
+                    <TextBlock Text="SAVED" Style="{StaticResource Label}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock x:Name="StatToday" Text="0" Style="{StaticResource StatNumber}"/>
+                    <TextBlock Text="TODAY" Style="{StaticResource Label}"/>
+                </StackPanel>
+                <Grid Grid.Column="3" Width="210" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,2">
+                    <TextBox x:Name="Search" Padding="28,6,8,6" TextChanged="Search_TextChanged"/>
+                    <TextBlock Text="&#xE721;" Style="{StaticResource IconText}" FontSize="12" Foreground="{StaticResource TextFaint}"
+                               VerticalAlignment="Center" Margin="10,0,0,0" IsHitTestVisible="False"/>
+                    <TextBlock x:Name="SearchHint" Text="Search" Foreground="{StaticResource TextFaint}" VerticalAlignment="Center"
+                               Margin="29,0,0,1" IsHitTestVisible="False"/>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="1" Margin="0,26,0,0">
+                <Border BorderBrush="{StaticResource StrokeHi}" BorderThickness="0,0,0,1" Padding="0,0,0,8">
+                    <Grid>
+                        <TextBlock Text="HISTORY" Style="{StaticResource Label}" Foreground="{StaticResource TextDim}" VerticalAlignment="Bottom"/>
+                        <Button Style="{StaticResource Btn}" Content="Clear finished" Padding="9,3" FontSize="11.5" BorderBrush="Transparent"
+                                Foreground="{StaticResource TextDim}" HorizontalAlignment="Right" Click="Clear_Click"/>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <Grid Grid.Row="2">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,-14,0" Padding="0,0,14,0">
+                    <ItemsControl x:Name="Queue"/>
+                </ScrollViewer>
+
+                <!-- Empty state teaches the gesture. -->
+                <StackPanel x:Name="EmptyState" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,-30,0,0">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Border Style="{StaticResource KeyCap}" Padding="14,8,14,7">
+                            <TextBlock x:Name="EmptyKey" Text="Ctrl" FontSize="15" FontWeight="SemiBold"/>
+                        </Border>
+                        <TextBlock Text="+" FontSize="18" Foreground="{StaticResource TextFaint}" VerticalAlignment="Center" Margin="12,0"/>
+                        <Border Style="{StaticResource KeyCap}" Padding="12,8,14,7">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE962;" Style="{StaticResource IconText}" FontSize="15" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Right-click" FontSize="15" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <TextBlock Text="on a file in Explorer or on the desktop" FontSize="14" HorizontalAlignment="Center" Margin="0,18,0,4"/>
+                    <TextBlock Text="opens the wheel. Or just drag files in here." Style="{StaticResource Dim}" HorizontalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock x:Name="NoMatch" Text="Nothing found." Style="{StaticResource Dim}" HorizontalAlignment="Center"
+                           VerticalAlignment="Top" Margin="0,40,0,0" Visibility="Collapsed"/>
+            </Grid>
+        </Grid>
+
+        <!-- Page: settings -->
+        <v:SettingsView x:Name="SettingsPage" Grid.Row="1" Visibility="Collapsed"/>
+
+        <!-- Footer: what is installed, and the gesture reminder. -->
+        <Border Grid.Row="2" Background="{StaticResource Ink}" BorderBrush="{StaticResource Stroke}" BorderThickness="0,1,0,0" Padding="22,8">
+            <Grid>
+                <StackPanel x:Name="EngineDots" Orientation="Horizontal" VerticalAlignment="Center"/>
+                <TextBlock x:Name="FooterHint" Style="{StaticResource MonoText}" FontSize="10.5" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- Shown while files are dragged over the window. -->
+        <Border x:Name="DropOverlay" Grid.Row="1" Grid.RowSpan="2" Background="#E6121210" Visibility="Collapsed" IsHitTestVisible="False">
+            <Border Margin="24" BorderBrush="{StaticResource Signal}" BorderThickness="1.5">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Border Width="12" Height="12" Background="{StaticResource Signal}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Drop" FontSize="22" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,14,0,2"/>
+                    <TextBlock Text="then pick in the wheel what should happen" Style="{StaticResource Dim}" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</Window>

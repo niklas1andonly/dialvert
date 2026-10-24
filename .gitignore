@@ -1,0 +1,10 @@
+bin/
+obj/
+dist/
+*.user
+.vs/
+# Downloaded by scripts/fetch-engines.ps1
+engines/*
+!engines/README.md
+# Local test media
+testdata/

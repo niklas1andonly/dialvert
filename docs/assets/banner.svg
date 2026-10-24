@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-label="Dialvert – the right-click file converter for Windows">
+  <defs>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32,0 L0,0 0,32" fill="none" stroke="#1E1E1B" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="glow" cx="1010" cy="200" r="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#DCF23C" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#DCF23C" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="frame"><rect width="1280" height="400" rx="18"/></clipPath>
+  </defs>
+  <g clip-path="url(#frame)">
+    <rect width="1280" height="400" fill="#121210"/>
+    <rect width="1280" height="400" fill="url(#grid)"/>
+    <rect width="1280" height="400" fill="url(#glow)"/>
+    <rect y="394" width="1280" height="6" fill="#DCF23C"/>
+
+    <!-- logo mark (same geometry as the app's title bar, 18x18 scaled 4x) -->
+    <g transform="translate(80,92) scale(4)">
+      <path d="M9,2 A7,7 0 1 1 2,9" fill="none" stroke="#DCF23C" stroke-width="3.2"/>
+      <rect x="1" y="1" width="4" height="4" fill="#DCF23C"/>
+      <circle cx="9" cy="9" r="2" fill="#EFECE4"/>
+    </g>
+    <text x="172" y="156" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="78" font-weight="700" fill="#EFECE4" letter-spacing="-1">dialvert</text>
+
+    <text x="82" y="222" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="30" fill="#EFECE4">The right-click file converter for Windows.</text>
+    <text x="82" y="262" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="19" fill="#8F8B81">Images, video, audio, documents, spreadsheets and subtitles.</text>
+
+    <!-- key caps: Ctrl + Right-click -->
+    <g font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="600" fill="#EFECE4">
+      <rect x="82" y="300" width="70" height="40" rx="5" fill="#292825" stroke="#48463F"/>
+      <rect x="82" y="336" width="70" height="4" rx="2" fill="#48463F"/>
+      <text x="117" y="326" text-anchor="middle">Ctrl</text>
+      <text x="172" y="327" text-anchor="middle" fill="#5E5B54" font-weight="400" font-size="22">+</text>
+      <rect x="192" y="300" width="128" height="40" rx="5" fill="#292825" stroke="#48463F"/>
+      <rect x="192" y="336" width="128" height="4" rx="2" fill="#48463F"/>
+      <text x="256" y="326" text-anchor="middle">Right-click</text>
+    </g>
+    <text x="346" y="326" font-family="'Cascadia Mono', Consolas, 'SFMono-Regular', Menlo, monospace" font-size="13" fill="#8F8B81" letter-spacing="2">OFFLINE · NO UPLOADS · NO TELEMETRY</text>
+
+    <!-- the action wheel -->
+    <path d="M931.0,63.2 A158,158 0 0 1 1089.0,63.2 L1043.0,142.8 A66,66 0 0 0 977.0,142.8 Z" fill="#1F1F1C" stroke="#121210" stroke-width="4"/>
+    <text x="1010.0" y="82.0" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="700" fill="#EFECE4">PNG</text>
+    <text x="1010.0" y="99.0" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#8F8B81">Convert image</text>
+    <path d="M1089.0,63.2 A158,158 0 0 1 1168.0,200.0 L1076.0,200.0 A66,66 0 0 0 1043.0,142.8 Z" fill="#DCF23C" stroke="#121210" stroke-width="4"/>
+    <text x="1110.5" y="140.0" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="700" fill="#121210">WEBP</text>
+    <text x="1110.5" y="157.0" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#3A4010">Convert image</text>
+    <path d="M1168.0,200.0 A158,158 0 0 1 1089.0,336.8 L1043.0,257.2 A66,66 0 0 0 1076.0,200.0 Z" fill="#1F1F1C" stroke="#121210" stroke-width="4"/>
+    <text x="1110.5" y="256.0" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="700" fill="#EFECE4">AVIF</text>
+    <text x="1110.5" y="273.0" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#8F8B81">Convert image</text>
+    <path d="M1089.0,336.8 A158,158 0 0 1 931.0,336.8 L977.0,257.2 A66,66 0 0 0 1043.0,257.2 Z" fill="#1F1F1C" stroke="#121210" stroke-width="4"/>
+    <text x="1010.0" y="314.0" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="700" fill="#EFECE4">TIFF</text>
+    <text x="1010.0" y="331.0" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#8F8B81">Convert image</text>
+    <path d="M931.0,336.8 A158,158 0 0 1 852.0,200.0 L944.0,200.0 A66,66 0 0 0 977.0,257.2 Z" fill="#1F1F1C" stroke="#121210" stroke-width="4"/>
+    <text x="909.5" y="256.0" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="700" fill="#EFECE4">BMP</text>
+    <text x="909.5" y="273.0" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#8F8B81">Convert image</text>
+    <path d="M852.0,200.0 A158,158 0 0 1 931.0,63.2 L977.0,142.8 A66,66 0 0 0 944.0,200.0 Z" fill="#1F1F1C" stroke="#121210" stroke-width="4"/>
+    <text x="909.5" y="140.0" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="21" font-weight="700" fill="#EFECE4">PDF</text>
+    <text x="909.5" y="157.0" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10.5" fill="#8F8B81">All into one PDF</text>
+    <line x1="926.0" y1="54.5" x2="922.0" y2="47.6" stroke="#48463F" stroke-width="2"/>
+    <line x1="1094.0" y1="54.5" x2="1098.0" y2="47.6" stroke="#48463F" stroke-width="2"/>
+    <line x1="1178.0" y1="200.0" x2="1186.0" y2="200.0" stroke="#48463F" stroke-width="2"/>
+    <line x1="1094.0" y1="345.5" x2="1098.0" y2="352.4" stroke="#48463F" stroke-width="2"/>
+    <line x1="926.0" y1="345.5" x2="922.0" y2="352.4" stroke="#48463F" stroke-width="2"/>
+    <line x1="842.0" y1="200.0" x2="834.0" y2="200.0" stroke="#48463F" stroke-width="2"/>
+    <circle cx="1010" cy="200" r="60" fill="#121210" stroke="#48463F" stroke-width="2"/>
+    <text x="1010" y="178" text-anchor="middle" font-family="'Cascadia Mono', Consolas, 'SFMono-Regular', Menlo, monospace" font-size="11" fill="#8F8B81">beach.jpg</text>
+    <rect x="966" y="190" width="88" height="20" rx="3" fill="#DCF23C"/>
+    <text x="974" y="204.5" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="600" fill="#121210">Convert</text>
+    <text x="1046" y="204.5" text-anchor="end" font-family="'Cascadia Mono', Consolas, 'SFMono-Regular', Menlo, monospace" font-size="11" fill="#121210">1</text>
+    <text x="974" y="227" font-family="Bahnschrift, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#8F8B81">Compress</text>
+    <text x="1046" y="227" text-anchor="end" font-family="'Cascadia Mono', Consolas, 'SFMono-Regular', Menlo, monospace" font-size="11" fill="#5E5B54">2</text>
+  </g>
+</svg>
